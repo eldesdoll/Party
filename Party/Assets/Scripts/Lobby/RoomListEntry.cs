@@ -7,8 +7,8 @@ using Photon.Pun;
 
 public class RoomListEntry : MonoBehaviour
 {
-    public TextMeshPro RoomNameText;
-    public TextMeshPro RoomPlayersText;
+    public TMP_Text RoomNameText;
+    public TMP_Text RoomPlayersText;
     public Button JoinRoomButton;
 
     private string roomName;

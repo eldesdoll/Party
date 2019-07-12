@@ -1,17 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+
 using ExitGames.Client.Photon;
 using Photon.Realtime;
-using Photon.Pun;
 using Photon.Pun.UtilityScripts;
+using TMPro;
+using Photon.Pun;
 
 public class PlayerListEntry : MonoBehaviour
 {
     [Header("UI References")]
-    public TextMeshPro PlayerNameText;
+    public TMP_Text PlayerNameText;
 
     public Image PlayerColorImage;
     public Button PlayerReadyButton;
@@ -20,4 +19,61 @@ public class PlayerListEntry : MonoBehaviour
     private int ownerId;
     private bool isPlayerReady;
 
+    #region UNITY
+    public void OnEnable()
+    {
+        PlayerNumbering.OnPlayerNumberingChanged += OnPlayerNumberingChanged;
+    }
+
+    public void Start()
+    {
+        if (PhotonNetwork.LocalPlayer.ActorNumber != ownerId)
+        {
+            PlayerReadyButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            Hashtable initialProps = new Hashtable() { { Characters.PLAYER_READY, isPlayerReady }};
+            PhotonNetwork.LocalPlayer.SetCustomProperties(initialProps);
+            PhotonNetwork.LocalPlayer.SetScore(0);
+
+            PlayerReadyButton.onClick.AddListener(() =>
+            {
+                isPlayerReady = !isPlayerReady;
+                SetPlayerReady(isPlayerReady);
+
+                Hashtable props = new Hashtable() { { Characters.PLAYER_READY, isPlayerReady } };
+                PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    FindObjectOfType<LobbyMainScene>().LocalPlayerPropertiesUpdated();
+                }
+            });
+        }
+    }
+    #endregion
+
+    public void Initialize(int playerId, string playerName)
+    {
+        ownerId = playerId;
+        PlayerNameText.text = playerName;
+    }
+
+    private void OnPlayerNumberingChanged()
+    {
+        foreach (Player p in PhotonNetwork.PlayerList)
+        {
+            if (p.ActorNumber == ownerId)
+            {
+                //PlayerColorImage.color = AsteroidsGame.GetColor(p.GetPlayerNumber());
+            }
+        }
+    }
+
+    public void SetPlayerReady(bool playerReady)
+    {
+        PlayerReadyButton.GetComponentInChildren<Text>().text = playerReady ? "Listo!" : "Listo?";
+        PlayerReadyImage.enabled = playerReady;
+    }
 }
