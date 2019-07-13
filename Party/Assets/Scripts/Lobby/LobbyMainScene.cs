@@ -107,7 +107,7 @@ public class LobbyMainScene : MonoBehaviourPunCallbacks
             entry.GetComponent<PlayerListEntry>().Initialize(p.ActorNumber, p.NickName);
 
             object isPlayerReady;
-            if (p.CustomProperties.TryGetValue(Characters.PLAYER_READY, out isPlayerReady))
+            if (p.CustomProperties.TryGetValue(Players.PLAYER_READY, out isPlayerReady))
             {
                 entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool)isPlayerReady);
             }
@@ -119,7 +119,7 @@ public class LobbyMainScene : MonoBehaviourPunCallbacks
 
         Hashtable props = new Hashtable
             {
-                {Characters.PLAYER_LOADED_LEVEL, false}
+                {Players.PLAYER_LOADED_LEVEL, false}
             };
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
     }
@@ -176,7 +176,7 @@ public class LobbyMainScene : MonoBehaviourPunCallbacks
         if (playerListEntries.TryGetValue(targetPlayer.ActorNumber, out entry))
         {
             object isPlayerReady;
-            if (changedProps.TryGetValue(Characters.PLAYER_READY, out isPlayerReady))
+            if (changedProps.TryGetValue(Players.PLAYER_READY, out isPlayerReady))
             {
                 entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool)isPlayerReady);
             }
@@ -230,7 +230,7 @@ public class LobbyMainScene : MonoBehaviourPunCallbacks
         }
         else
         {
-            Debug.LogError("Player Name is invalid.");
+            Debug.LogError("El nombre del jugador es invalido.");
         }
     }
 
@@ -249,7 +249,7 @@ public class LobbyMainScene : MonoBehaviourPunCallbacks
         PhotonNetwork.CurrentRoom.IsOpen = false;
         PhotonNetwork.CurrentRoom.IsVisible = false;
 
-        PhotonNetwork.LoadLevel("DemoAsteroids-GameScene");
+        PhotonNetwork.LoadLevel("Mapa");
     }
     #endregion
 
@@ -263,7 +263,7 @@ public class LobbyMainScene : MonoBehaviourPunCallbacks
         foreach (Player p in PhotonNetwork.PlayerList)
         {
             object isPlayerReady;
-            if (p.CustomProperties.TryGetValue(Characters.PLAYER_READY, out isPlayerReady))
+            if (p.CustomProperties.TryGetValue(Players.PLAYER_READY, out isPlayerReady))
             {
                 if (!(bool)isPlayerReady)
                 {
